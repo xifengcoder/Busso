@@ -56,11 +56,11 @@ internal fun mapBusArrivals(busArrivals: BusArrivals): BusArrivalsViewModel =
  * Maps the BusArrivalGroup into a BusArrivalGroupViewModel adding some decorations
  */
 internal fun mapBusArrivalGroup(busArrivalGroup: BusArrivalGroup): BusArrivalGroupViewModel {
-  return BusArrivalGroupViewModel(
-      lineName = busArrivalGroup.lineName,
-      destination = busArrivalGroup.destination,
-      arrivals = busArrivalGroup.arrivals.map(::mapBusArrival)
-  )
+    return BusArrivalGroupViewModel(
+        lineName = busArrivalGroup.lineName,
+        destination = busArrivalGroup.destination,
+        arrivals = busArrivalGroup.arrivals.map(::mapBusArrival)
+    )
 }
 
 /**
@@ -85,6 +85,6 @@ internal fun mapBusArrival(arrival: BusArrival): BusArrivalViewModel =
 fun mapBusArrival(arrivals: List<BusArrival>): List<BusArrivalViewModel> =
     arrivals.map(::mapBusArrival)
 
-val DATE_FORMATTER = SimpleDateFormat("HH:mm")
+val DATE_FORMATTER = SimpleDateFormat("HH:mm", Locale.ENGLISH)
 
 private fun expectedTime(expectedTime: Date) = DATE_FORMATTER.format(expectedTime)
