@@ -2,4 +2,5 @@ rootProject.name = "Busso"
 include ':app'
 include ':libs:location:api'
 include ':libs:location:rx'
+include ':libs:mvp'
 include ':libs:ui:navigation'

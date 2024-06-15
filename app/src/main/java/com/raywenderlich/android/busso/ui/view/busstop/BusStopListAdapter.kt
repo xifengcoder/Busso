@@ -45,20 +45,20 @@ import com.raywenderlich.android.busso.ui.events.OnItemSelectedListener
  */
 val DIFF_UTIL = object : DiffUtil.ItemCallback<BusStopViewModel>() {
 
-  override fun areItemsTheSame(
-      oldItem: BusStopViewModel,
-      newItem: BusStopViewModel
-  ): Boolean {
-    return oldItem.stopId == newItem.stopId
-  }
+    override fun areItemsTheSame(
+        oldItem: BusStopViewModel,
+        newItem: BusStopViewModel
+    ): Boolean {
+        return oldItem.stopId == newItem.stopId
+    }
 
-  override fun areContentsTheSame(
-      oldItem: BusStopViewModel,
-      newItem: BusStopViewModel
-  ): Boolean {
-    return oldItem.stopId == newItem.stopId &&
-        oldItem.stopDistance == newItem.stopDistance
-  }
+    override fun areContentsTheSame(
+        oldItem: BusStopViewModel,
+        newItem: BusStopViewModel
+    ): Boolean {
+        return oldItem.stopId == newItem.stopId &&
+                oldItem.stopDistance == newItem.stopDistance
+    }
 }
 
 /**
@@ -69,17 +69,17 @@ class BusStopListAdapter(
 ) :
     ListAdapter<BusStopViewModel, BusStopItemViewHolder>(DIFF_UTIL) {
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusStopItemViewHolder {
-    val itemLayout =
-        LayoutInflater.from(parent.context)
-            .inflate(R.layout.busstop_list_item_layout, parent, false)
-    return BusStopItemViewHolder(
-        itemLayout,
-        onItemSelectedListener
-    )
-  }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusStopItemViewHolder {
+        val itemLayout =
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.busstop_list_item_layout, parent, false)
+        return BusStopItemViewHolder(
+            itemLayout,
+            onItemSelectedListener
+        )
+    }
 
-  override fun onBindViewHolder(holder: BusStopItemViewHolder, position: Int) {
-    holder.bind(position, getItem(position))
-  }
+    override fun onBindViewHolder(holder: BusStopItemViewHolder, position: Int) {
+        holder.bind(position, getItem(position))
+    }
 }

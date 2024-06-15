@@ -32,50 +32,28 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.busso.ui.view.busarrival
+package com.raywenderlich.android.busso.di.locators
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import com.raywenderlich.android.busso.R
+import androidx.fragment.app.Fragment
 
-/**
- * The DiffUtil.ItemCallback for the Arrival Time
- */
-private val ARRIVAL_TIME_DIFF_UTIL = object : DiffUtil.ItemCallback<BusArrivalViewModel>() {
-
-    override fun areItemsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
+val fragmentServiceLocatorFactory: (ServiceLocator) -> ServiceLocatorFactory<Fragment> =
+  { fallbackServiceLocator: ServiceLocator ->
+    { fragment: Fragment ->
+      FragmentServiceLocator(fragment).apply {
+        activityServiceLocator = fallbackServiceLocator
+      }
     }
+  }
 
-    override fun areContentsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
-}
+class FragmentServiceLocator(
+  val fragment: Fragment
+) : ServiceLocator {
 
-/**
- * The Adapter for the BusArrivals
- */
-class BusArrivalTimeAdapter :
-    ListAdapter<BusArrivalViewModel, BusArrivalTimeViewHolder>(ARRIVAL_TIME_DIFF_UTIL) {
+  var activityServiceLocator: ServiceLocator? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusArrivalTimeViewHolder {
-        val itemLayout =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.busarrival_item_layout, parent, false)
-        return BusArrivalTimeViewHolder(
-            itemLayout
-        )
-    }
-
-    override fun onBindViewHolder(holder: BusArrivalTimeViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+  @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+  override fun <A : Any> lookUp(name: String): A = when (name) {
+    else -> activityServiceLocator?.lookUp<A>(name)
+      ?: throw IllegalArgumentException("No component lookup for the key: $name")
+  } as A
 }

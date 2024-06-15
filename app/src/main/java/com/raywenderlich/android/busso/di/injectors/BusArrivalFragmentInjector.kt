@@ -32,50 +32,28 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.busso.ui.view.busarrival
+package com.raywenderlich.android.busso.di.injectors
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import com.raywenderlich.android.busso.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.raywenderlich.android.busso.di.locators.ACTIVITY_LOCATOR_FACTORY
+import com.raywenderlich.android.busso.di.locators.BUSSO_ENDPOINT
+import com.raywenderlich.android.busso.di.locators.FRAGMENT_LOCATOR_FACTORY
+import com.raywenderlich.android.busso.di.locators.ServiceLocatorFactory
+import com.raywenderlich.android.busso.lookUp
+import com.raywenderlich.android.busso.ui.view.busarrival.BusArrivalFragment
 
-/**
- * The DiffUtil.ItemCallback for the Arrival Time
- */
-private val ARRIVAL_TIME_DIFF_UTIL = object : DiffUtil.ItemCallback<BusArrivalViewModel>() {
-
-    override fun areItemsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
-}
-
-/**
- * The Adapter for the BusArrivals
- */
-class BusArrivalTimeAdapter :
-    ListAdapter<BusArrivalViewModel, BusArrivalTimeViewHolder>(ARRIVAL_TIME_DIFF_UTIL) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusArrivalTimeViewHolder {
-        val itemLayout =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.busarrival_item_layout, parent, false)
-        return BusArrivalTimeViewHolder(
-            itemLayout
-        )
-    }
-
-    override fun onBindViewHolder(holder: BusArrivalTimeViewHolder, position: Int) {
-        holder.bind(getItem(position))
+object BusArrivalFragmentInjector : Injector<BusArrivalFragment> {
+    override fun inject(target: BusArrivalFragment) {
+        val parentActivity = target.context as AppCompatActivity
+        val activityServiceLocator =
+            parentActivity.lookUp<ServiceLocatorFactory<AppCompatActivity>>(ACTIVITY_LOCATOR_FACTORY)
+                .invoke(parentActivity)
+        val fragmentServiceLocator =
+            activityServiceLocator.lookUp<ServiceLocatorFactory<Fragment>>(FRAGMENT_LOCATOR_FACTORY)
+                .invoke(target)
+        with(target) {
+            bussoEndpoint = fragmentServiceLocator.lookUp(BUSSO_ENDPOINT)
+        }
     }
 }

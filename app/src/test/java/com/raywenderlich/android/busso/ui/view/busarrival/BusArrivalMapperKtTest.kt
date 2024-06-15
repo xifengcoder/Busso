@@ -59,7 +59,7 @@ class BusArrivalMapperKtTest {
         val busArrivalGroup = BusArrivalGroup(
             "lineId",
             "lineName",
-            "destination",
+            "destinationName",
             listOf(
                 BusArrival(
                     "id1",
@@ -70,6 +70,7 @@ class BusArrivalMapperKtTest {
                     Calendar.getInstance().apply {
                         set(Calendar.HOUR, 12)
                         set(Calendar.MINUTE, 34)
+                        set(Calendar.AM_PM, 0)
                     }.time
                 ),
                 BusArrival(
@@ -81,6 +82,7 @@ class BusArrivalMapperKtTest {
                     Calendar.getInstance().apply {
                         set(Calendar.HOUR, 13)
                         set(Calendar.MINUTE, 5)
+                        set(Calendar.AM_PM, 0)
                     }.time
                 )
             )
@@ -100,14 +102,20 @@ class BusArrivalMapperKtTest {
                     "destinationName",
                     listOf(
                         BusArrivalViewModel(
-                            "13:05",
+                            "12:34",
                             "vehicle1",
+                            "destinationName"
+                        ),
+                        BusArrivalViewModel(
+                            "13:05",
+                            "vehicle2",
                             "destinationName"
                         )
                     )
                 )
             )
         )
+        assertEquals(expected, mapBusArrivals(busArrivals))
     }
 
     @Test
@@ -126,6 +134,7 @@ class BusArrivalMapperKtTest {
                     Calendar.getInstance().apply {
                         set(Calendar.HOUR, 12)
                         set(Calendar.MINUTE, 34)
+                        set(Calendar.AM_PM, 0)
                     }.time
                 ),
                 BusArrival(
@@ -137,6 +146,7 @@ class BusArrivalMapperKtTest {
                     Calendar.getInstance().apply {
                         set(Calendar.HOUR, 13)
                         set(Calendar.MINUTE, 5)
+                        set(Calendar.AM_PM, 0)
                     }.time
                 )
             )
@@ -164,6 +174,7 @@ class BusArrivalMapperKtTest {
         val arrivalDate = Calendar.getInstance().apply {
             set(Calendar.HOUR, 12)
             set(Calendar.MINUTE, 34)
+            set(Calendar.AM_PM, 0)
         }
         val busArrival = BusArrival(
             "id",
@@ -186,6 +197,7 @@ class BusArrivalMapperKtTest {
         val arrivalDate = Calendar.getInstance().apply {
             set(Calendar.HOUR, 12)
             set(Calendar.MINUTE, 34)
+            set(Calendar.AM_PM, 0)
         }
         val busArrival = BusArrival(
             "id",

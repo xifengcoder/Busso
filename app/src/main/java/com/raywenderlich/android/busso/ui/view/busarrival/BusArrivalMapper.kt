@@ -56,11 +56,11 @@ internal fun mapBusArrivals(busArrivals: BusArrivals): BusArrivalsViewModel =
  * Maps the BusArrivalGroup into a BusArrivalGroupViewModel adding some decorations
  */
 internal fun mapBusArrivalGroup(busArrivalGroup: BusArrivalGroup): BusArrivalGroupViewModel {
-  return BusArrivalGroupViewModel(
-      lineName = busArrivalGroup.lineName,
-      destination = busArrivalGroup.destination,
-      arrivals = busArrivalGroup.arrivals.map(::mapBusArrival)
-  )
+    return BusArrivalGroupViewModel(
+        lineName = busArrivalGroup.lineName,
+        destination = busArrivalGroup.destination,
+        arrivals = busArrivalGroup.arrivals.map(::mapBusArrival)
+    )
 }
 
 /**

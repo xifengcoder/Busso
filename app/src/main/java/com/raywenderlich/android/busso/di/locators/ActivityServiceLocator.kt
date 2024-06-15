@@ -32,50 +32,49 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.busso.ui.view.busarrival
+package com.raywenderlich.android.busso.di.locators
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import com.raywenderlich.android.busso.R
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.raywenderlich.android.ui.navigation.NavigatorImpl
 
-/**
- * The DiffUtil.ItemCallback for the Arrival Time
- */
-private val ARRIVAL_TIME_DIFF_UTIL = object : DiffUtil.ItemCallback<BusArrivalViewModel>() {
+const val NAVIGATOR = "Navigator"
+const val FRAGMENT_LOCATOR_FACTORY = "FragmentLocatorFactory"
 
-    override fun areItemsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
+val activityServiceLocatorFactory: (ServiceLocator) -> ServiceLocatorFactory<AppCompatActivity> =
+    { fallbackServiceLocator: ServiceLocator ->
+        { activity: AppCompatActivity ->
+            ActivityServiceLocator(activity).apply {
+                applicationServiceLocator = fallbackServiceLocator
+            }
+        }
     }
 
-    override fun areContentsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
-}
-
-/**
- * The Adapter for the BusArrivals
- */
-class BusArrivalTimeAdapter :
-    ListAdapter<BusArrivalViewModel, BusArrivalTimeViewHolder>(ARRIVAL_TIME_DIFF_UTIL) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusArrivalTimeViewHolder {
-        val itemLayout =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.busarrival_item_layout, parent, false)
-        return BusArrivalTimeViewHolder(
-            itemLayout
-        )
+class ActivityServiceLocator(
+    val activity: AppCompatActivity
+) : ServiceLocator {
+    companion object {
+        const val TAG = "ActivityServiceLocator"
     }
 
-    override fun onBindViewHolder(holder: BusArrivalTimeViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    var applicationServiceLocator: ServiceLocator? = null
+
+    @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+    override fun <A : Any> lookUp(name: String): A {
+        Log.i(TAG, "ActivityServiceLocator lookup name: $name")
+        return when (name) {
+            NAVIGATOR -> {
+                NavigatorImpl(activity)
+            }
+
+            FRAGMENT_LOCATOR_FACTORY -> {
+                fragmentServiceLocatorFactory(this)
+            }
+
+            else -> {
+                applicationServiceLocator?.lookUp<A>(name)
+                    ?: throw IllegalArgumentException("No component lookup for the key: $name")
+            }
+        } as A
     }
 }

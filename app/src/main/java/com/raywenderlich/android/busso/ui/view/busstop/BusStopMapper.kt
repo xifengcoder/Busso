@@ -55,5 +55,5 @@ internal fun mapBusStop(busStops: List<BusStop>): List<BusStopViewModel> =
     busStops.map(::mapBusStop)
 
 private fun formatDistance(distance: Float?) = if (distance != null) {
-  "${distance.toInt()} m"
+    "${distance.toInt()} m"
 } else "--"

@@ -32,50 +32,44 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.busso.ui.view.busarrival
+package com.raywenderlich.android.busso.di
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import com.raywenderlich.android.busso.R
+import androidx.test.core.app.ApplicationProvider
+import com.raywenderlich.android.busso.di.locators.LOCATION_OBSERVABLE
+import com.raywenderlich.android.busso.di.locators.ServiceLocatorImpl
+import com.raywenderlich.android.location.api.model.LocationEvent
+import io.reactivex.Observable
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.ExpectedException
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/**
- * The DiffUtil.ItemCallback for the Arrival Time
- */
-private val ARRIVAL_TIME_DIFF_UTIL = object : DiffUtil.ItemCallback<BusArrivalViewModel>() {
+@RunWith(RobolectricTestRunner::class)
+class ServiceLocatorImplTest {
 
-    override fun areItemsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
+  @Rule
+  @JvmField
+  var thrown: ExpectedException = ExpectedException.none()
 
-    override fun areContentsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
-}
+  lateinit var serviceLocator: ServiceLocatorImpl
 
-/**
- * The Adapter for the BusArrivals
- */
-class BusArrivalTimeAdapter :
-    ListAdapter<BusArrivalViewModel, BusArrivalTimeViewHolder>(ARRIVAL_TIME_DIFF_UTIL) {
+  @Before
+  fun setUp() {
+    serviceLocator = ServiceLocatorImpl(ApplicationProvider.getApplicationContext())
+  }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusArrivalTimeViewHolder {
-        val itemLayout =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.busarrival_item_layout, parent, false)
-        return BusArrivalTimeViewHolder(
-            itemLayout
-        )
-    }
+  @Test
+  fun lookUp_whenObjectIsMissing_throwsException() {
+    thrown.expect(IllegalArgumentException::class.java)
+    serviceLocator.lookUp<Any>("MISSING")
+  }
 
-    override fun onBindViewHolder(holder: BusArrivalTimeViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+  @Test
+  fun lookUp_whenLookUpForLocationObservable_ObservableForEventIsReturned() {
+    val observable = serviceLocator.lookUp<Observable<LocationEvent>>(LOCATION_OBSERVABLE)
+    Assert.assertNotNull(observable)
+  }
 }

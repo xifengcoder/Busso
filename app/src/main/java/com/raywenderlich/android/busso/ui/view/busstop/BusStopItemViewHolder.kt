@@ -48,32 +48,32 @@ class BusStopItemViewHolder(
     private val onItemSelectedListener: OnItemSelectedListener<BusStopViewModel>? = null
 ) : RecyclerView.ViewHolder(itemView) {
 
-  private val busStopNameTextView: TextView = itemView.findViewById(R.id.bus_stop_item_name)
-  private val busStopIndicatorTextView: TextView = itemView.findViewById(R.id.bus_stop_indicator)
-  private val busStopDirectionTextView: TextView =
-      itemView.findViewById(R.id.bus_stop_item_direction)
-  private val busStopDistanceTextView: TextView =
-      itemView.findViewById(R.id.bus_stop_item_distance)
+    private val busStopNameTextView: TextView = itemView.findViewById(R.id.bus_stop_item_name)
+    private val busStopIndicatorTextView: TextView = itemView.findViewById(R.id.bus_stop_indicator)
+    private val busStopDirectionTextView: TextView =
+        itemView.findViewById(R.id.bus_stop_item_direction)
+    private val busStopDistanceTextView: TextView =
+        itemView.findViewById(R.id.bus_stop_item_distance)
 
-  lateinit var busStopListModel: BusStopViewModel
+    lateinit var busStopListModel: BusStopViewModel
 
-  fun bind(position: Int, itemViewModel: BusStopViewModel) {
-    busStopListModel = itemViewModel
-    busStopNameTextView.text = itemViewModel.stopName
-    busStopIndicatorTextView.text = itemViewModel.stopIndicator
-    busStopDistanceTextView.text = itemViewModel.stopDistance
-    if (itemViewModel.stopDirection.isBlank()) {
-      busStopDirectionTextView.visibility = View.GONE
-    } else {
-      busStopDirectionTextView.run {
-        text = itemViewModel.stopDirection
-        visibility = View.VISIBLE
-      }
+    fun bind(position: Int, itemViewModel: BusStopViewModel) {
+        busStopListModel = itemViewModel
+        busStopNameTextView.text = itemViewModel.stopName
+        busStopIndicatorTextView.text = itemViewModel.stopIndicator
+        busStopDistanceTextView.text = itemViewModel.stopDistance
+        if (itemViewModel.stopDirection.isBlank()) {
+            busStopDirectionTextView.visibility = View.GONE
+        } else {
+            busStopDirectionTextView.run {
+                text = itemViewModel.stopDirection
+                visibility = View.VISIBLE
+            }
+        }
+        onItemSelectedListener?.run {
+            itemView.setOnClickListener {
+                invoke(position, itemViewModel)
+            }
+        }
     }
-    onItemSelectedListener?.run {
-      itemView.setOnClickListener {
-        invoke(position, itemViewModel)
-      }
-    }
-  }
 }

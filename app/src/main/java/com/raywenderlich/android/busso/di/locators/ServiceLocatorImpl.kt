@@ -32,50 +32,37 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.busso.ui.view.busarrival
+package com.raywenderlich.android.busso.di.locators
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import com.raywenderlich.android.busso.R
+import android.content.Context
+import android.location.LocationManager
+import com.raywenderlich.android.busso.network.provideBussoEndPoint
+import com.raywenderlich.android.busso.permission.GeoLocationPermissionCheckerImpl
+import com.raywenderlich.android.location.rx.provideRxLocationObservable
 
-/**
- * The DiffUtil.ItemCallback for the Arrival Time
- */
-private val ARRIVAL_TIME_DIFF_UTIL = object : DiffUtil.ItemCallback<BusArrivalViewModel>() {
+const val LOCATION_OBSERVABLE = "LocationObservable"
+const val ACTIVITY_LOCATOR_FACTORY = "ActivityLocatorFactory"
+const val BUSSO_ENDPOINT = "BussoEndpoint"
 
-    override fun areItemsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
+class ServiceLocatorImpl(
+    val context: Context
+) : ServiceLocator {
 
-    override fun areContentsTheSame(
-        oldItem: BusArrivalViewModel,
-        newItem: BusArrivalViewModel
-    ): Boolean {
-        return oldItem == newItem
-    }
-}
+    private val locationManager =
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val geoLocationPermissionChecker = GeoLocationPermissionCheckerImpl(context)
+    private val locationObservable =
+        provideRxLocationObservable(locationManager, geoLocationPermissionChecker)
+    private val bussoEndpoint = provideBussoEndPoint(context)
 
-/**
- * The Adapter for the BusArrivals
- */
-class BusArrivalTimeAdapter :
-    ListAdapter<BusArrivalViewModel, BusArrivalTimeViewHolder>(ARRIVAL_TIME_DIFF_UTIL) {
+    @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+    override fun <A : Any> lookUp(name: String): A {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusArrivalTimeViewHolder {
-        val itemLayout =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.busarrival_item_layout, parent, false)
-        return BusArrivalTimeViewHolder(
-            itemLayout
-        )
-    }
-
-    override fun onBindViewHolder(holder: BusArrivalTimeViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        return when (name) {
+            LOCATION_OBSERVABLE -> locationObservable
+            BUSSO_ENDPOINT -> bussoEndpoint
+            ACTIVITY_LOCATOR_FACTORY -> activityServiceLocatorFactory(this)
+            else -> throw IllegalArgumentException("No component lookup for the key: $name")
+        } as A
     }
 }

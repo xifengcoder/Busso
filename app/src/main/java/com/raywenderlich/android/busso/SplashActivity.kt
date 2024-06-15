@@ -42,18 +42,12 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.raywenderlich.android.busso.di.ACTIVITY_LOCATOR_FACTORY
-import com.raywenderlich.android.busso.di.LOCATION_OBSERVABLE
-import com.raywenderlich.android.busso.di.NAVIGATOR
-import com.raywenderlich.android.busso.di.ServiceLocator
-import com.raywenderlich.android.busso.di.ServiceLocatorFactory
-import com.raywenderlich.android.busso.di.SplashActivityInjector
+import com.raywenderlich.android.busso.di.injectors.SplashActivityInjector
 import com.raywenderlich.android.location.api.model.LocationEvent
 import com.raywenderlich.android.location.api.model.LocationPermissionGranted
 import com.raywenderlich.android.location.api.model.LocationPermissionRequest
 import com.raywenderlich.android.ui.navigation.ActivityIntentDestination
 import com.raywenderlich.android.ui.navigation.Navigator
-import com.raywenderlich.android.ui.navigation.NavigatorImpl
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
@@ -72,9 +66,8 @@ class SplashActivity : AppCompatActivity() {
 
     private val handler = Handler()
     private val disposables = CompositeDisposable()
-     lateinit var locationObservable: Observable<LocationEvent>
-     lateinit var activityServiceLocator: ServiceLocator
-     lateinit var navigator: Navigator
+    lateinit var locationObservable: Observable<LocationEvent>
+    lateinit var navigator: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
