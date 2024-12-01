@@ -36,6 +36,6 @@ package com.raywenderlich.android.busso.di.injectors
 
 interface Injector<A> {
 
-    fun inject(target: A)
+  fun inject(target: A)
 }
 

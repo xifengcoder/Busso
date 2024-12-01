@@ -46,172 +46,172 @@ import java.util.*
 
 class BusArrivalMapperKtTest {
 
-    @Test
-    fun mapBusArrivals_whenBusArrivalsComplete_returnsViewModelComplete() {
-        val busStop = BusStop(
-            "id",
-            "stopName",
-            GeoLocation(1.0, 2.0),
-            "direction",
-            "indicator",
-            123F
-        )
-        val busArrivalGroup = BusArrivalGroup(
-            "lineId",
-            "lineName",
-            "destinationName",
-            listOf(
-                BusArrival(
-                    "id1",
-                    "vehicle1",
-                    "lineId",
-                    "lineName",
-                    "destinationName",
-                    Calendar.getInstance().apply {
-                        set(Calendar.HOUR, 12)
-                        set(Calendar.MINUTE, 34)
-                        set(Calendar.AM_PM, 0)
-                    }.time
-                ),
-                BusArrival(
-                    "id2",
-                    "vehicle2",
-                    "lineId",
-                    "lineName",
-                    "destinationName",
-                    Calendar.getInstance().apply {
-                        set(Calendar.HOUR, 13)
-                        set(Calendar.MINUTE, 5)
-                        set(Calendar.AM_PM, 0)
-                    }.time
-                )
+  @Test
+  fun mapBusArrivals_whenBusArrivalsComplete_returnsViewModelComplete() {
+    val busStop = BusStop(
+        "id",
+        "stopName",
+        GeoLocation(1.0, 2.0),
+        "direction",
+        "indicator",
+        123F
+    )
+    val busArrivalGroup = BusArrivalGroup(
+        "lineId",
+        "lineName",
+        "destinationName",
+        listOf(
+            BusArrival(
+                "id1",
+                "vehicle1",
+                "lineId",
+                "lineName",
+                "destinationName",
+                Calendar.getInstance().apply {
+                  set(Calendar.HOUR, 12)
+                  set(Calendar.MINUTE, 34)
+                  set(Calendar.AM_PM, 0)
+                }.time
+            ),
+            BusArrival(
+                "id2",
+                "vehicle2",
+                "lineId",
+                "lineName",
+                "destinationName",
+                Calendar.getInstance().apply {
+                  set(Calendar.HOUR, 13)
+                  set(Calendar.MINUTE, 5)
+                  set(Calendar.AM_PM, 0)
+                }.time
             )
         )
-        val busArrivals = BusArrivals(busStop, listOf(busArrivalGroup))
-        val expected = BusArrivalsViewModel(
-            BusStopViewModel(
-                "id",
-                "stopName",
-                "direction",
-                "indicator",
-                "123 m"
-            ),
-            listOf(
-                BusArrivalGroupViewModel(
-                    "lineName",
-                    "destinationName",
-                    listOf(
-                        BusArrivalViewModel(
-                            "12:34",
-                            "vehicle1",
-                            "destinationName"
-                        ),
-                        BusArrivalViewModel(
-                            "13:05",
-                            "vehicle2",
-                            "destinationName"
-                        )
+    )
+    val busArrivals = BusArrivals(busStop, listOf(busArrivalGroup))
+    val expected = BusArrivalsViewModel(
+        BusStopViewModel(
+            "id",
+            "stopName",
+            "direction",
+            "indicator",
+            "123 m"
+        ),
+        listOf(
+            BusArrivalGroupViewModel(
+                "lineName",
+                "destinationName",
+                listOf(
+                    BusArrivalViewModel(
+                        "12:34",
+                        "vehicle1",
+                        "destinationName"
+                    ),
+                    BusArrivalViewModel(
+                        "13:05",
+                        "vehicle2",
+                        "destinationName"
                     )
                 )
             )
         )
-        assertEquals(expected, mapBusArrivals(busArrivals))
-    }
+    )
+    assertEquals(expected, mapBusArrivals(busArrivals))
+  }
 
-    @Test
-    fun mapBusArrivalGroup_whenArrivalGroup_returnsViewModelWithArrivalsViewModels() {
-        val busArrivalGroup = BusArrivalGroup(
-            "lineId",
-            "lineName",
-            "destination",
-            listOf(
-                BusArrival(
-                    "id1",
-                    "vehicle1",
-                    "lineId",
-                    "lineName",
-                    "destinationName",
-                    Calendar.getInstance().apply {
-                        set(Calendar.HOUR, 12)
-                        set(Calendar.MINUTE, 34)
-                        set(Calendar.AM_PM, 0)
-                    }.time
-                ),
-                BusArrival(
-                    "id2",
-                    "vehicle2",
-                    "lineId",
-                    "lineName",
-                    "destinationName",
-                    Calendar.getInstance().apply {
-                        set(Calendar.HOUR, 13)
-                        set(Calendar.MINUTE, 5)
-                        set(Calendar.AM_PM, 0)
-                    }.time
-                )
+  @Test
+  fun mapBusArrivalGroup_whenArrivalGroup_returnsViewModelWithArrivalsViewModels() {
+    val busArrivalGroup = BusArrivalGroup(
+        "lineId",
+        "lineName",
+        "destination",
+        listOf(
+            BusArrival(
+                "id1",
+                "vehicle1",
+                "lineId",
+                "lineName",
+                "destinationName",
+                Calendar.getInstance().apply {
+                  set(Calendar.HOUR, 12)
+                  set(Calendar.MINUTE, 34)
+                  set(Calendar.AM_PM, 0)
+                }.time
+            ),
+            BusArrival(
+                "id2",
+                "vehicle2",
+                "lineId",
+                "lineName",
+                "destinationName",
+                Calendar.getInstance().apply {
+                  set(Calendar.HOUR, 13)
+                  set(Calendar.MINUTE, 5)
+                  set(Calendar.AM_PM, 0)
+                }.time
             )
         )
-        val expected = BusArrivalGroupViewModel(
-            "lineName",
-            "destination",
-            listOf(
-                BusArrivalViewModel(
-                    "12:34",
-                    "vehicle1",
-                    "destinationName"
-                ), BusArrivalViewModel(
-                    "13:05",
-                    "vehicle2",
-                    "destinationName"
-                )
-            )
-        )
-        assertEquals(expected, mapBusArrivalGroup(busArrivalGroup))
-    }
-
-    @Test
-    fun mapBusArrival_whenBusArrivalIsComplete_retunsBusArrivalViewModelComplete() {
-        val arrivalDate = Calendar.getInstance().apply {
-            set(Calendar.HOUR, 12)
-            set(Calendar.MINUTE, 34)
-            set(Calendar.AM_PM, 0)
-        }
-        val busArrival = BusArrival(
-            "id",
-            "vehicleId",
-            "lineId",
-            "lineName",
-            "destinationName",
-            arrivalDate.time
-        )
-        val expected = BusArrivalViewModel(
-            "12:34",
-            "vehicleId",
+    )
+    val expected = BusArrivalGroupViewModel(
+        "lineName",
+        "destination",
+        listOf(
+            BusArrivalViewModel(
+                "12:34",
+                "vehicle1",
+                "destinationName"
+            ), BusArrivalViewModel(
+            "13:05",
+            "vehicle2",
             "destinationName"
         )
-        assertEquals(expected, mapBusArrival(busArrival))
-    }
+        )
+    )
+    assertEquals(expected, mapBusArrivalGroup(busArrivalGroup))
+  }
 
-    @Test
-    fun mapBusArrival_whenBusArrivalVehicleMissing_retunsBusArrivalViewModelDefaultVehicle() {
-        val arrivalDate = Calendar.getInstance().apply {
-            set(Calendar.HOUR, 12)
-            set(Calendar.MINUTE, 34)
-            set(Calendar.AM_PM, 0)
-        }
-        val busArrival = BusArrival(
-            "id",
-            null,
-            "lineId",
-            "lineName",
-            "destinationName",
-            arrivalDate.time
-        )
-        val expected = BusArrivalViewModel(
-            "12:34",
-            "-",
-            "destinationName"
-        )
-        assertEquals(expected, mapBusArrival(busArrival))
+  @Test
+  fun mapBusArrival_whenBusArrivalIsComplete_retunsBusArrivalViewModelComplete() {
+    val arrivalDate = Calendar.getInstance().apply {
+      set(Calendar.HOUR, 12)
+      set(Calendar.MINUTE, 34)
+      set(Calendar.AM_PM, 0)
     }
+    val busArrival = BusArrival(
+        "id",
+        "vehicleId",
+        "lineId",
+        "lineName",
+        "destinationName",
+        arrivalDate.time
+    )
+    val expected = BusArrivalViewModel(
+        "12:34",
+        "vehicleId",
+        "destinationName"
+    )
+    assertEquals(expected, mapBusArrival(busArrival))
+  }
+
+  @Test
+  fun mapBusArrival_whenBusArrivalVehicleMissing_retunsBusArrivalViewModelDefaultVehicle() {
+    val arrivalDate = Calendar.getInstance().apply {
+      set(Calendar.HOUR, 12)
+      set(Calendar.MINUTE, 34)
+      set(Calendar.AM_PM, 0)
+    }
+    val busArrival = BusArrival(
+        "id",
+        null,
+        "lineId",
+        "lineName",
+        "destinationName",
+        arrivalDate.time
+    )
+    val expected = BusArrivalViewModel(
+        "12:34",
+        "-",
+        "destinationName"
+    )
+    assertEquals(expected, mapBusArrival(busArrival))
+  }
 }

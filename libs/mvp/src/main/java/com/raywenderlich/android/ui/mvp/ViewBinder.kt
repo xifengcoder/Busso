@@ -32,7 +32,7 @@
  * THE SOFTWARE.
  */
 
-package com.raywenderlich.android.ui.mvp
+package com.raywenderlich.android.mvp
 
 /** ViewBinder Abstraction */
 interface ViewBinder<V> {

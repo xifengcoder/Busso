@@ -34,47 +34,72 @@
 
 package com.raywenderlich.android.busso.di.locators
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.raywenderlich.android.busso.ui.view.main.MainPresenter
+import com.raywenderlich.android.busso.ui.view.main.MainPresenterImpl
+import com.raywenderlich.android.busso.ui.view.splash.SplashPresenter
+import com.raywenderlich.android.busso.ui.view.splash.SplashPresenterImpl
+import com.raywenderlich.android.busso.ui.view.splash.SplashViewBinder
+import com.raywenderlich.android.busso.ui.view.splash.SplashViewBinderImpl
+import com.raywenderlich.android.location.api.model.LocationEvent
+import com.raywenderlich.android.ui.navigation.Navigator
 import com.raywenderlich.android.ui.navigation.NavigatorImpl
+import io.reactivex.Observable
 
 const val NAVIGATOR = "Navigator"
 const val FRAGMENT_LOCATOR_FACTORY = "FragmentLocatorFactory"
+const val MAIN_PRESENTER = "MainPresenter"
+const val SPLASH_PRESENTER = "SplashPresenter"
+const val SPLASH_VIEWBINDER = "SplashViewBinder"
 
 val activityServiceLocatorFactory: (ServiceLocator) -> ServiceLocatorFactory<AppCompatActivity> =
     { fallbackServiceLocator: ServiceLocator ->
-        { activity: AppCompatActivity ->
-            ActivityServiceLocator(activity).apply {
-                applicationServiceLocator = fallbackServiceLocator
-            }
+      { activity: AppCompatActivity ->
+        ActivityServiceLocator(activity).apply {
+          applicationServiceLocator = fallbackServiceLocator
         }
+      }
     }
 
 class ActivityServiceLocator(
     val activity: AppCompatActivity
 ) : ServiceLocator {
-    companion object {
-        const val TAG = "ActivityServiceLocator"
+
+  var applicationServiceLocator: ServiceLocator? = null
+  var mainPresenter: MainPresenter? = null
+  var splashPresenter: SplashPresenter? = null
+  var splashViewBinder: SplashViewBinder? = null
+
+  @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+  override fun <A : Any> lookUp(name: String): A = when (name) {
+    NAVIGATOR -> NavigatorImpl(activity)
+    FRAGMENT_LOCATOR_FACTORY -> fragmentServiceLocatorFactory(this)
+    SPLASH_VIEWBINDER -> {
+      if (splashViewBinder == null) {
+        val navigator: Navigator = lookUp(NAVIGATOR)
+        splashViewBinder = SplashViewBinderImpl(
+            navigator
+        )
+      }
+      splashViewBinder
     }
-
-    var applicationServiceLocator: ServiceLocator? = null
-
-    @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
-    override fun <A : Any> lookUp(name: String): A {
-        Log.i(TAG, "ActivityServiceLocator lookup name: $name")
-        return when (name) {
-            NAVIGATOR -> {
-                NavigatorImpl(activity)
-            }
-
-            FRAGMENT_LOCATOR_FACTORY -> {
-                fragmentServiceLocatorFactory(this)
-            }
-
-            else -> {
-                applicationServiceLocator?.lookUp<A>(name)
-                    ?: throw IllegalArgumentException("No component lookup for the key: $name")
-            }
-        } as A
+    SPLASH_PRESENTER -> {
+      if (splashPresenter == null) {
+        val locationObservable: Observable<LocationEvent> = applicationServiceLocator!!.lookUp(LOCATION_OBSERVABLE)
+        splashPresenter = SplashPresenterImpl(
+            locationObservable
+        )
+      }
+      splashPresenter
     }
+    MAIN_PRESENTER -> {
+      if (mainPresenter == null) {
+        val navigator: Navigator = lookUp(NAVIGATOR)
+        mainPresenter = MainPresenterImpl(navigator)
+      }
+      mainPresenter
+    }
+    else -> applicationServiceLocator?.lookUp<A>(name)
+        ?: throw IllegalArgumentException("No component lookup for the key: $name")
+  } as A
 }

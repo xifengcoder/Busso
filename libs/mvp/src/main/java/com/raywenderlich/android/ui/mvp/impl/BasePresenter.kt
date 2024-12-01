@@ -1,8 +1,8 @@
-package com.raywenderlich.android.ui.mvp.impl
+package com.raywenderlich.android.mvp.impl
 
 import androidx.annotation.CallSuper
-import com.raywenderlich.android.ui.mvp.Presenter
-import com.raywenderlich.android.ui.mvp.ViewBinder
+import com.raywenderlich.android.mvp.Presenter
+import com.raywenderlich.android.mvp.ViewBinder
 
 /**
  * Base class for Presenters¬
