@@ -38,9 +38,7 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.raywenderlich.android.busso.R
-import com.raywenderlich.android.busso.di.AppModule
-import com.raywenderlich.android.busso.di.DaggerAppComponent
-import com.raywenderlich.android.busso.network.NetworkModule
+import com.raywenderlich.android.busso.appComp
 import javax.inject.Inject
 
 /**
@@ -50,52 +48,55 @@ import javax.inject.Inject
  */
 class SplashActivity : AppCompatActivity() {
 
-    @Inject // 1
-    lateinit var splashViewBinder: SplashViewBinder
+  @Inject
+  lateinit var splashViewBinder: SplashViewBinder
 
-    @Inject // 2
-    lateinit var splashPresenter: SplashPresenter
+  @Inject
+  lateinit var splashPresenter: SplashPresenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        makeFullScreen()
-        setContentView(R.layout.activity_splash)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    makeFullScreen()
+    setContentView(R.layout.activity_splash)
+    this.application.appComp
+      .activityComponentBuilder()
+      .activity(this)
+      .build()
+      .inject(this)
+    splashViewBinder.init(this)
+  }
 
-        DaggerAppComponent.factory().create(this).inject(this)
-        splashViewBinder.init(this)
+  override fun onStart() {
+    super.onStart()
+    with(splashPresenter) {
+      bind(splashViewBinder)
+      start()
     }
+  }
 
-    override fun onStart() {
-        super.onStart()
-        with(splashPresenter) {
-            bind(splashViewBinder)
-            start()
-        }
+  override fun onStop() {
+    with(splashPresenter) {
+      stop()
+      unbind()
     }
+    super.onStop()
+  }
 
-    override fun onStop() {
-        with(splashPresenter) {
-            stop()
-            unbind()
-        }
-        super.onStop()
-    }
-
-    private fun makeFullScreen() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-        supportActionBar?.hide()
-    }
+  private fun makeFullScreen() {
+    requestWindowFeature(Window.FEATURE_NO_TITLE)
+    window.setFlags(
+      WindowManager.LayoutParams.FLAG_FULLSCREEN,
+      WindowManager.LayoutParams.FLAG_FULLSCREEN
+    )
+    supportActionBar?.hide()
+  }
 
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        splashViewBinder.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
+  ) {
+    splashViewBinder.onRequestPermissionsResult(requestCode, permissions, grantResults)
+  }
 }

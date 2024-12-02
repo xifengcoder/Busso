@@ -42,7 +42,7 @@ import javax.inject.Inject
 
 /** MainPresenter implementation */
 class MainPresenterImpl @Inject constructor(
-    private val navigator: Navigator
+  private val navigator: Navigator
 ) : MainPresenter {
   override fun goToBusStopList() {
     navigator.navigateTo(FragmentDestination(BusStopFragment(), R.id.anchor_point))

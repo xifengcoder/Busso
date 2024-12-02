@@ -37,7 +37,7 @@ package com.raywenderlich.android.busso.ui.view.splash
 import com.raywenderlich.android.location.api.model.LocationEvent
 import com.raywenderlich.android.location.api.model.LocationPermissionGranted
 import com.raywenderlich.android.location.api.model.LocationPermissionRequest
-import com.raywenderlich.android.mvp.impl.BasePresenter
+import com.raywenderlich.android.ui.mvp.impl.BasePresenter
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
@@ -45,7 +45,7 @@ import javax.inject.Inject
 
 /** Presenter implementation for the SplashActivity */
 class SplashPresenterImpl @Inject constructor(
-    private val locationObservable: Observable<LocationEvent>,
+  private val locationObservable: Observable<LocationEvent>,
 ) : BasePresenter<SplashActivity, SplashViewBinder>(), SplashPresenter {
 
   companion object {
@@ -56,10 +56,10 @@ class SplashPresenterImpl @Inject constructor(
 
   override fun start() {
     disposables.add(
-        locationObservable
-            .delay(DELAY_MILLIS, TimeUnit.MILLISECONDS)
-            .filter(::isPermissionEvent)
-            .subscribe(::handlePermissionRequest, ::handleError)
+      locationObservable
+        .delay(DELAY_MILLIS, TimeUnit.MILLISECONDS)
+        .filter(::isPermissionEvent)
+        .subscribe(::handlePermissionRequest, ::handleError)
     )
   }
 
@@ -76,7 +76,7 @@ class SplashPresenterImpl @Inject constructor(
   }
 
   private fun isPermissionEvent(locationEvent: LocationEvent) =
-      locationEvent is LocationPermissionRequest || locationEvent is LocationPermissionGranted
+    locationEvent is LocationPermissionRequest || locationEvent is LocationPermissionGranted
 
   private fun handleError(error: Throwable) {
     useViewBinder {

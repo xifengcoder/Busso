@@ -46,7 +46,7 @@ import javax.inject.Inject
 
 /** The ViewBinder implementation for the SplashActivity */
 class SplashViewBinderImpl @Inject constructor(
-    private val navigator: Navigator
+  private val navigator: Navigator
 ) : SplashViewBinder {
 
   companion object {
@@ -63,9 +63,9 @@ class SplashViewBinderImpl @Inject constructor(
   override fun goToMain() {
     handler.post {
       navigator.navigateTo(
-          ActivityIntentDestination(
-              Intent(splashActivity, MainActivity::class.java)
-          )
+        ActivityIntentDestination(
+          Intent(splashActivity, MainActivity::class.java)
+        )
       )
       with(splashActivity) {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -80,16 +80,16 @@ class SplashViewBinderImpl @Inject constructor(
 
   override fun requestLocationPermission() {
     ActivityCompat.requestPermissions(
-        splashActivity,
-        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-        LOCATION_PERMISSION_REQUEST_ID
+      splashActivity,
+      arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+      LOCATION_PERMISSION_REQUEST_ID
     )
   }
 
   override fun onRequestPermissionsResult(
-      requestCode: Int,
-      permissions: Array<String>,
-      grantResults: IntArray
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
   ) {
     when (requestCode) {
       LOCATION_PERMISSION_REQUEST_ID -> {

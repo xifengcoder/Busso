@@ -34,7 +34,7 @@
 
 package com.raywenderlich.android.busso.ui.view.splash
 
-import com.raywenderlich.android.mvp.ViewBinder
+import com.raywenderlich.android.ui.mvp.ViewBinder
 
 /** The ViewBinder for the SplashActivity */
 interface SplashViewBinder : ViewBinder<SplashActivity> {
@@ -46,8 +46,8 @@ interface SplashViewBinder : ViewBinder<SplashActivity> {
   fun requestLocationPermission()
 
   fun onRequestPermissionsResult(
-      requestCode: Int,
-      permissions: Array<String>,
-      grantResults: IntArray
+    requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
   )
 }

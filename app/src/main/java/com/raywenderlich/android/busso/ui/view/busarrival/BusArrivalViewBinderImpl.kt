@@ -40,10 +40,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.raywenderlich.android.busso.R
+import com.raywenderlich.android.di.scopes.FragmentScope
 import javax.inject.Inject
 
 /** The ViewBinder for the BusArrival screen */
-class BusArrivalViewBinderImpl @Inject constructor(): BusArrivalViewBinder {
+@FragmentScope
+class BusArrivalViewBinderImpl @Inject constructor() : BusArrivalViewBinder {
 
   private lateinit var busArrivalRecyclerView: RecyclerView
   private val busArrivalsAdapter = BusArrivalListAdapter()
@@ -78,9 +80,9 @@ class BusArrivalViewBinderImpl @Inject constructor(): BusArrivalViewBinder {
   /** Display the error message */
   override fun handleBusArrivalError(error: Throwable) {
     Snackbar.make(
-        busArrivalRecyclerView,
-        "$error.localizedMessage",
-        Snackbar.LENGTH_LONG
+      busArrivalRecyclerView,
+      "$error.localizedMessage",
+      Snackbar.LENGTH_LONG
     ).show()
   }
 

@@ -41,8 +41,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.raywenderlich.android.busso.R
-import com.raywenderlich.android.busso.di.injectors.BusStopFragmentInjector
-import com.raywenderlich.android.busso.ui.view.main.comp
+import com.raywenderlich.android.busso.plugins.ui.InformationPluginPresenter
+import com.raywenderlich.android.busso.plugins.ui.InformationPluginViewBinder
+import com.raywenderlich.android.busso.ui.view.main.activityComp
 import javax.inject.Inject
 
 /**
@@ -50,23 +51,32 @@ import javax.inject.Inject
  */
 class BusStopFragment : Fragment() {
 
-  @Inject // 1
+  @Inject
   lateinit var busStopListViewBinder: BusStopListViewBinder
 
-  @Inject // 1
+  @Inject
   lateinit var busStopListPresenter: BusStopListPresenter
 
+  @Inject
+  lateinit var informationViewBinder: InformationPluginViewBinder
+
+  @Inject
+  lateinit var informationPresenter: InformationPluginPresenter
+
   override fun onAttach(context: Context) {
-    context.comp?.inject(this)
+    context.activityComp
+      .fragmentComponent()
+      .inject(this)
     super.onAttach(context)
   }
 
   override fun onCreateView(
-      inflater: LayoutInflater,
-      container: ViewGroup?,
-      savedInstanceState: Bundle?
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_busstop_layout, container, false).apply {
     busStopListViewBinder.init(this)
+    informationViewBinder.init(this)
   }
 
 
@@ -76,10 +86,18 @@ class BusStopFragment : Fragment() {
       bind(busStopListViewBinder)
       start()
     }
+    with(informationPresenter) {
+      bind(informationViewBinder)
+      start()
+    }
   }
 
   override fun onStop() {
     with(busStopListPresenter) {
+      stop()
+      unbind()
+    }
+    with(informationPresenter) {
       stop()
       unbind()
     }

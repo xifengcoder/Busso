@@ -41,8 +41,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.raywenderlich.android.busso.R
-import com.raywenderlich.android.busso.di.injectors.BusArrivalFragmentInjector
-import com.raywenderlich.android.busso.ui.view.main.comp
+import com.raywenderlich.android.busso.ui.view.main.activityComp
 import javax.inject.Inject
 
 /**
@@ -52,6 +51,7 @@ class BusArrivalFragment : Fragment() {
 
   @Inject
   lateinit var busArrivalViewBinder: BusArrivalViewBinder
+
   @Inject
   lateinit var busArrivalPresenter: BusArrivalPresenter
 
@@ -60,14 +60,16 @@ class BusArrivalFragment : Fragment() {
   }
 
   override fun onAttach(context: Context) {
-    context.comp?.inject(this)
+    context.activityComp
+      .fragmentComponent()
+      .inject(this)
     super.onAttach(context)
   }
 
   override fun onCreateView(
-      inflater: LayoutInflater,
-      container: ViewGroup?,
-      savedInstanceState: Bundle?
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
   ): View? = inflater.inflate(R.layout.fragment_busarrival_layout, container, false).apply {
     busArrivalViewBinder.init(this)
   }
